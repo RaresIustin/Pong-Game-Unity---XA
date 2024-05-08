@@ -9,7 +9,12 @@ using UnityEditor;
 
 public class Ball : MonoBehaviour
 {
+
     bool GameOver = false;
+    bool ScorePlayer1 = false;
+    bool ScorePlayer2 = false;
+    bool isRigth;
+    
     public int MaxScore;
     public SpriteRenderer SpriteRendererBall;
     public TextMeshProUGUI Player1Text;
@@ -26,15 +31,7 @@ public class Ball : MonoBehaviour
         Player1Text.enabled = false;    
         Player2Text.enabled = false;
 
-        startingPosition = transform.position;
-        bool isRigth = UnityEngine.Random.value >= 5;
-        float xVelocity = -1f;
-
-        if (isRigth)
-            xVelocity = 1f;
-
-        float yVelocity = UnityEngine.Random.Range(-1f, 1f);
-        rb.velocity = new Vector2 (xVelocity * StartingSpeed, yVelocity * StartingSpeed);
+        StartBall();
     }
 
     private void Update()
@@ -69,6 +66,7 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.CompareTag("LeftGate") && GameOver == false)
         {
             rightScore++;
+            ScorePlayer2 = true;
             RightScoreText.text = rightScore.ToString();
             Debug.Log("Right score: " + rightScore);
             Reset();
@@ -76,6 +74,7 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.CompareTag("RightGate") && GameOver == false) //&& rightScore != MaxScore && leftScore != MaxScore)
         {
             leftScore++;
+            ScorePlayer1 = true;
             LeftScoreText.text = leftScore.ToString();
             Debug.Log("Left score: " + leftScore);
             Reset();
@@ -83,6 +82,25 @@ public class Ball : MonoBehaviour
 
     }
     
+    public void StartBall()
+    {
+        startingPosition = transform.position;
+
+        if (ScorePlayer1 == true)
+            isRigth = UnityEngine.Random.value >= 5;
+        if (ScorePlayer2 == true)
+            isRigth = UnityEngine.Random.value <= 5;
+
+        float xVelocity = -1f;
+
+        if (isRigth)
+            xVelocity = 1f;
+
+        float yVelocity = UnityEngine.Random.Range(-1f, 1f);
+        rb.velocity = new Vector2 (xVelocity * StartingSpeed, yVelocity * StartingSpeed);
+    }
+
+
      public void Win()
     {
         SceneManager.LoadScene("TitleScreen");
